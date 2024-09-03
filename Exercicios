@@ -1,0 +1,1436 @@
+1
+CLASSE PRINCIPAL
+public class Main {
+    public static void main(String[] args) {
+       
+        Produto produto1 = new Produto("001", "Produto A", 25.50, 5);
+        Produto produto2 = new Produto("002", "Produto B", 15.75, 2);
+
+        
+        Fornecedor fornecedor = new Fornecedor("Rafael Moraes", "rafael20072011@gmail.com");
+
+        
+        Pedido pedido;
+        Pedido = new Pedido(fornecedor);
+        pedido.adicionarProduto(produto1);
+        pedido.adicionarProduto(produto2);
+
+        
+        if (produto1.estaComEstoqueBaixo(10) || produto2.estaComEstoqueBaixo(10)) {
+            pedido.fazerPedido();
+        } else {
+            System.out.println("Estoque suficiente. Nenhum pedido necessário.");
+        }
+    }
+}
+
+CLASSE PRODUTO
+public class Produto {
+    private String codigo;
+    private String nome;
+    private double preco;
+    private int quantidade;
+
+    public Produto(String codigo, String nome, double preco, int quantidade) {
+        this.codigo = codigo;
+        this.nome = nome;
+        this.preco = preco;
+        this.quantidade = quantidade;
+    }
+
+    public void atualizarQuantidade(int quantidade) {
+        this.quantidade += quantidade;
+    }
+
+    public boolean estaComEstoqueBaixo(int limite) {
+        return this.quantidade < limite;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s (Código: %s) - Preço: R$%.2f, Quantidade: %d", nome, codigo, preco, quantidade);
+    }
+}
+
+CLASSE FORNECEDOR
+public class Fornecedor {
+    private String nome;
+    private String contato;
+
+    public Fornecedor(String nome, String contato) {
+        this.nome = nome;
+        this.contato = contato;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s - Contato: %s", nome, contato);
+    }
+}
+
+CLASSE PEDIDO 
+import java.util.ArrayList;
+import java.util.List;
+
+public class Pedido {
+    private Fornecedor fornecedor;
+    private List<Produto> produtos;
+
+    public Pedido(Fornecedor fornecedor) {
+        this.fornecedor = fornecedor;
+        this.produtos = new ArrayList<>();
+    }
+
+    public void adicionarProduto(Produto produto) {
+        produtos.add(produto);
+    }
+
+    public void fazerPedido() {
+        System.out.println("Pedido para fornecedor: " + fornecedor);
+        for (Produto produto : produtos) {
+            System.out.println("Produto: " + produto);
+            
+            produto.atualizarQuantidade(10); // Adicionando 10 unidades para simplificação
+            System.out.println("Quantidade após pedido: " + produto);
+        }
+    }
+}
+
+2
+CLASSE PRINCIPAL
+import java.util.List;
+
+public class Main {
+    public static void main(String[] args) {
+        
+        Departamento d1 = new Departamento("Desenvolvimento");
+        Departamento d2 = new Departamento("Marketing");
+
+        
+        Funcionario f1 = new Funcionario("Alice", 5000);
+        Funcionario f2 = new Funcionario("Bob", 6000);
+        Funcionario f3 = new Funcionario("Carol", 5500);
+
+        
+        d1.adicionarFuncionario(f1);
+        d1.adicionarFuncionario(f2);
+        d2.adicionarFuncionario(f3);
+
+        
+        Projeto p1 = new Projeto("Projeto A");
+        Projeto p2 = new Projeto("Projeto B");
+
+        
+        f1.adicionarProjeto(p1);
+        f2.adicionarProjeto(p1);
+        f3.adicionarProjeto(p2);
+
+        
+        System.out.println("Média salarial do departamento de Desenvolvimento: R$" + d1.calcularMediaSalarial());
+
+        
+        System.out.println(f1 + " está trabalhando em:");
+        for (Projeto projeto : f1.getProjetos()) {
+            System.out.println("- " + projeto);
+        }
+    }
+}
+
+CLASSE FUNCIONARIO 
+import java.util.ArrayList;
+import java.util.List;
+
+public class Funcionario {
+    private String nome;
+    private double salario;
+    private List<Projeto> projetos;
+
+    public Funcionario(String nome, double salario) {
+        this.nome = nome;
+        this.salario = salario;
+        this.projetos = new ArrayList<>();
+    }
+
+    public void adicionarProjeto(Projeto projeto) {
+        if (!projetos.contains(projeto)) {
+            projetos.add(projeto);
+            projeto.adicionarFuncionario(this); // Adiciona o funcionário ao projeto
+        }
+    }
+
+    public List<Projeto> getProjetos() {
+        return projetos;
+    }
+
+    public double getSalario() {
+        return salario;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Funcionario: %s, Salario: R$%.2f", nome, salario);
+    }
+}
+
+CLASSE DEPARTAMENTO
+import java.util.ArrayList;
+import java.util.List;
+
+public class Departamento {
+    private String nome;
+    private List<Funcionario> funcionarios;
+
+    public Departamento(String nome) {
+        this.nome = nome;
+        this.funcionarios = new ArrayList<>();
+    }
+
+    public void adicionarFuncionario(Funcionario funcionario) {
+        if (!funcionarios.contains(funcionario)) {
+            funcionarios.add(funcionario);
+        }
+    }
+
+    public double calcularMediaSalarial() {
+        if (funcionarios.isEmpty()) return 0;
+
+        double somaSalarios = 0;
+        for (Funcionario funcionario : funcionarios) {
+            somaSalarios += funcionario.getSalario();
+        }
+
+        return somaSalarios / funcionarios.size();
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Departamento: %s", nome);
+    }
+}
+
+CLASSE PROJETO
+import java.util.ArrayList;
+import java.util.List;
+
+public class Projeto {
+    private String nome;
+    private List<Funcionario> funcionarios;
+
+    public Projeto(String nome) {
+        this.nome = nome;
+        this.funcionarios = new ArrayList<>();
+    }
+
+    public void adicionarFuncionario(Funcionario funcionario) {
+        if (!funcionarios.contains(funcionario)) {
+            funcionarios.add(funcionario);
+        }
+    }
+
+    public List<Funcionario> getFuncionarios() {
+        return funcionarios;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Projeto: %s", nome);
+    }
+}
+
+3
+CLASSE PRINCIPAL 
+public class Main {
+    public static void main(String[] args) {
+        
+        Usuario usuario1 = new Usuario("Rafael");
+        Usuario usuario2 = new Usuario("Moraes");
+
+        
+        usuario1.criarPublicacao("Olá, mundo!");
+        usuario1.criarPublicacao("Meu primeiro post no app de mídia social.");
+
+        
+        Comentario comentario1 = new Comentario(usuario2, "Muito legal, Alice!");
+        Comentario comentario2 = new Comentario(usuario2, "Parabéns pelo novo post!");
+
+        
+        Publicacao publicacao1 = usuario1.getPublicacoes().get(0);
+        publicacao1.comentar(comentario1);
+
+        Publicacao publicacao2 = usuario1.getPublicacoes().get(1);
+        publicacao2.comentar(comentario2);
+
+        
+        System.out.println("Publicações de " + usuario1 + ":");
+        for (Publicacao publicacao : usuario1.getPublicacoes()) {
+            System.out.println(publicacao);
+            for (Comentario comentario : publicacao.getComentarios()) {
+                System.out.println("  " + comentario);
+            }
+        }
+    }
+}
+
+CLASSE USUARIO
+import java.util.ArrayList;
+import java.util.List;
+
+public class Usuario {
+    private String nome;
+    private List<Publicacao> publicacoes;
+
+    public Usuario(String nome) {
+        this.nome = nome;
+        this.publicacoes = new ArrayList<>();
+    }
+
+    public void criarPublicacao(String conteudo) {
+        Publicacao novaPublicacao = new Publicacao(this, conteudo);
+        publicacoes.add(novaPublicacao);
+    }
+
+    public List<Publicacao> getPublicacoes() {
+        return publicacoes;
+    }
+
+    @Override
+    public String toString() {
+        return nome;
+    }
+}
+
+CLASSE PUBLICAÇAO 
+import java.util.ArrayList;
+import java.util.List;
+
+public class Publicacao {
+    private Usuario autor;
+    private String conteudo;
+    private List<Comentario> comentarios;
+
+    public Publicacao(Usuario autor, String conteudo) {
+        this.autor = autor;
+        this.conteudo = conteudo;
+        this.comentarios = new ArrayList<>();
+    }
+
+    public void comentar(Comentario comentario) {
+        comentarios.add(comentario);
+    }
+
+    public List<Comentario> getComentarios() {
+        return comentarios;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Publicação de %s: %s", autor, conteudo);
+    }
+}
+
+CLASSE COMENTARIO 
+public class Comentario {
+    private Usuario autor;
+    private String conteudo;
+
+    public Comentario(Usuario autor, String conteudo) {
+        this.autor = autor;
+        this.conteudo = conteudo;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Comentário de %s: %s", autor, conteudo);
+    }
+}
+
+4
+CLASSE PRINCIPAL 
+public class Main {
+    public static void main(String[] args) {
+        
+        Voo voo1 = new Voo("AA123", 100);
+        Voo voo2 = new Voo("BB456", 150);
+
+        
+        Passageiro passageiro1 = new Passageiro("Rafael");
+        Passageiro passageiro2 = new Passageiro("Flavia");
+
+        
+        if (voo1.reservarAssento(passageiro1)) {
+            System.out.println("Reserva confirmada para " + passageiro1.getNome() + " no voo " + voo1.getCodigo());
+        } else {
+            System.out.println("Não há assentos disponíveis no voo " + voo1.getCodigo());
+        }
+
+        if (voo1.reservarAssento(passageiro2)) {
+            System.out.println("Reserva confirmada para " + passageiro2.getNome() + " no voo " + voo1.getCodigo());
+        } else {
+            System.out.println("Não há assentos disponíveis no voo " + voo1.getCodigo());
+        }
+
+        
+        System.out.println("Reservas de " + passageiro1.getNome() + ":");
+        for (Reserva reserva : passageiro1.getReservas()) {
+            System.out.println(reserva);
+        }
+
+        
+        System.out.println("Disponibilidade do voo " + voo1.getCodigo() + ": " + (voo1.verificarDisponibilidade() ? "Disponível" : "Indisponível"));
+    }
+}
+
+CLASSE PASSAGEIRO
+import java.util.ArrayList;
+import java.util.List;
+
+public class Passageiro {
+    private String nome;
+    private List<Reserva> reservas;
+
+    public Passageiro(String nome) {
+        this.nome = nome;
+        this.reservas = new ArrayList<>();
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void adicionarReserva(Reserva reserva) {
+        reservas.add(reserva);
+    }
+
+    public List<Reserva> getReservas() {
+        return reservas;
+    }
+
+    @Override
+    public String toString() {
+        return nome;
+    }
+}
+
+
+CLASSE VOO
+import java.util.ArrayList;
+import java.util.List;
+
+public class Voo {
+    private String codigo;
+    private int capacidade;
+    private int assentosDisponiveis;
+    private List<Reserva> reservas;
+
+    public Voo(String codigo, int capacidade) {
+        this.codigo = codigo;
+        this.capacidade = capacidade;
+        this.assentosDisponiveis = capacidade;
+        this.reservas = new ArrayList<>();
+    }
+
+    public String getCodigo() {
+        return codigo;
+    }
+
+    public boolean verificarDisponibilidade() {
+        return assentosDisponiveis > 0;
+    }
+
+    public boolean reservarAssento(Passageiro passageiro) {
+        if (verificarDisponibilidade()) {
+            Reserva reserva = new Reserva(this, passageiro);
+            reservas.add(reserva);
+            assentosDisponiveis--;
+            passageiro.adicionarReserva(reserva);
+            return true;
+        }
+        return false;
+    }
+
+    public List<Reserva> getReservas() {
+        return reservas;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Voo: %s, Capacidade: %d, Assentos disponíveis: %d", codigo, capacidade, assentosDisponiveis);
+    }
+}
+
+CLASSE RESERVA
+public class Reserva {
+    private Voo voo;
+    private Passageiro passageiro;
+
+    public Reserva(Voo voo, Passageiro passageiro) {
+        this.voo = voo;
+        this.passageiro = passageiro;
+    }
+
+    public Voo getVoo() {
+        return voo;
+    }
+
+    public Passageiro getPassageiro() {
+        return passageiro;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Reserva: Passageiro: %s, Voo: %s", passageiro, voo.getCodigo());
+    }
+}
+
+5
+CLASSE PRINCIPAL 
+import java.time.LocalDateTime;
+import java.util.List;
+
+public class Main {
+    public static void main(String[] args) {
+        
+        Medico medico1 = new Medico("Dr. Rafael");
+        Medico medico2 = new Medico("Dra. Flavia");
+
+        
+        Paciente paciente1 = new Paciente("Carmem");
+        Paciente paciente2 = new Paciente("Teddy");
+
+        
+        new Consulta(paciente1, medico1, LocalDateTime.of(2024, 9, 15, 10, 0));
+        new Consulta(paciente2, medico1, LocalDateTime.of(2024, 9, 16, 14, 30));
+        new Consulta(paciente1, medico2, LocalDateTime.of(2024, 9, 17, 9, 0));
+
+        
+        System.out.println("Pacientes do " + medico1 + ":");
+        List<Paciente> pacientesMedico1 = medico1.listarPacientes();
+        for (Paciente paciente : pacientesMedico1) {
+            System.out.println(paciente);
+        }
+
+        
+        System.out.println("Próximas consultas com " + medico1 + ":");
+        for (Consulta consulta : medico1.getConsultas()) {
+            if (consulta.getDataHora().isAfter(LocalDateTime.now())) {
+                System.out.println(consulta);
+            }
+        }
+    }
+}
+
+CLASSE MEDICO
+import java.util.ArrayList;
+import java.util.List;
+
+public class Medico {
+    private String nome;
+    private List<Consulta> consultas;
+
+    public Medico(String nome) {
+        this.nome = nome;
+        this.consultas = new ArrayList<>();
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void agendarConsulta(Consulta consulta) {
+        consultas.add(consulta);
+    }
+
+    public List<Paciente> listarPacientes() {
+        List<Paciente> pacientes = new ArrayList<>();
+        for (Consulta consulta : consultas) {
+            if (!pacientes.contains(consulta.getPaciente())) {
+                pacientes.add(consulta.getPaciente());
+            }
+        }
+        return pacientes;
+    }
+
+    public List<Consulta> getConsultas() {
+        return consultas;
+    }
+
+    @Override
+    public String toString() {
+        return nome;
+    }
+}
+
+CLASSE PACIENTE
+import java.util.ArrayList;
+import java.util.List;
+
+public class Paciente {
+    private String nome;
+    private List<Consulta> consultas;
+
+    public Paciente(String nome) {
+        this.nome = nome;
+        this.consultas = new ArrayList<>();
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void adicionarConsulta(Consulta consulta) {
+        consultas.add(consulta);
+    }
+
+    public List<Consulta> getConsultas() {
+        return consultas;
+    }
+
+    @Override
+    public String toString() {
+        return nome;
+    }
+}
+
+CLASSE CONSULTA
+import java.time.LocalDateTime;
+
+public class Consulta {
+    private Paciente paciente;
+    private Medico medico;
+    private LocalDateTime dataHora;
+
+    public Consulta(Paciente paciente, Medico medico, LocalDateTime dataHora) {
+        this.paciente = paciente;
+        this.medico = medico;
+        this.dataHora = dataHora;
+        paciente.adicionarConsulta(this);
+        medico.agendarConsulta(this);
+    }
+
+    public Paciente getPaciente() {
+        return paciente;
+    }
+
+    public Medico getMedico() {
+        return medico;
+    }
+
+    public LocalDateTime getDataHora() {
+        return dataHora;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Consulta com %s para %s às %s", medico, paciente, dataHora);
+    }
+}
+
+6
+CLASSE PRINCIPAL
+public class Main {
+    public static void main(String[] args) {
+       
+        Marca marca1 = new Marca("Toyota");
+        Marca marca2 = new Marca("Honda");
+
+       
+        Carro carro1 = new Carro("Corolla", 100000, marca1);
+        Carro carro2 = new Carro("Civic", 120000, marca2);
+        Carro carro3 = new Carro("Nivus", 150000, marca1);
+
+        
+        marca1.adicionarCarro(carro1);
+        marca1.adicionarCarro(carro3);
+        marca2.adicionarCarro(carro2);
+
+        
+        Vendedor vendedor1 = new Vendedor("Rafael");
+        Vendedor vendedor2 = new Vendedor("Moraes");
+
+        
+        vendedor1.venderCarro(carro1);
+        vendedor1.venderCarro(carro2);
+        vendedor2.venderCarro(carro3);
+
+        
+        System.out.println("Média de preços da marca " + marca1 + ": R$" + marca1.calcularMediaPreco());
+        System.out.println("Média de preços da marca " + marca2 + ": R$" + marca2.calcularMediaPreco());
+
+        
+        System.out.println("Carros vendidos por " + vendedor1 + ":");
+        for (Carro carro : vendedor1.getCarrosVendidos()) {
+            System.out.println(carro);
+        }
+    }
+}
+
+CLASSE CARRO
+public class Carro {
+    private String modelo;
+    private double preco;
+    private Marca marca;
+
+    public Carro(String modelo, double preco, Marca marca) {
+        this.modelo = modelo;
+        this.preco = preco;
+        this.marca = marca;
+    }
+
+    public String getModelo() {
+        return modelo;
+    }
+
+    public double getPreco() {
+        return preco;
+    }
+
+    public Marca getMarca() {
+        return marca;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Carro: %s, Modelo: %s, Preço: R$%.2f", marca, modelo, preco);
+    }
+}
+
+CLASSE MARCA
+import java.util.ArrayList;
+import java.util.List;
+
+public class Marca {
+    private String nome;
+    private List<Carro> carros;
+
+    public Marca(String nome) {
+        this.nome = nome;
+        this.carros = new ArrayList<>();
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void adicionarCarro(Carro carro) {
+        carros.add(carro);
+    }
+
+    public List<Carro> getCarros() {
+        return carros;
+    }
+
+    public double calcularMediaPreco() {
+        if (carros.isEmpty()) return 0;
+
+        double somaPrecos = 0;
+        for (Carro carro : carros) {
+            somaPrecos += carro.getPreco();
+        }
+
+        return somaPrecos / carros.size();
+    }
+
+    @Override
+    public String toString() {
+        return nome;
+    }
+}
+
+CLASSE VENDEDOR
+import java.util.ArrayList;
+import java.util.List;
+
+public class Vendedor {
+    private String nome;
+    private List<Carro> carrosVendidos;
+
+    public Vendedor(String nome) {
+        this.nome = nome;
+        this.carrosVendidos = new ArrayList<>();
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void venderCarro(Carro carro) {
+        carrosVendidos.add(carro);
+    }
+
+    public List<Carro> getCarrosVendidos() {
+        return carrosVendidos;
+    }
+
+    @Override
+    public String toString() {
+        return nome;
+    }
+}
+
+7
+CLASSE PRINCIPAL 
+import java.time.LocalDate;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class Main {
+    public static void main(String[] args) {
+        
+        Autor autor1 = new Autor("J.K. Rowling");
+        Autor autor2 = new Autor("George R.R. Martin");
+
+        
+        Livro livro1 = new Livro("Harry Potter e a Pedra Filosofal", autor1);
+        Livro livro2 = new Livro("Harry Potter e a Câmara Secreta", autor1);
+        Livro livro3 = new Livro("A Guerra dos Tronos", autor2);
+
+        
+        Usuario usuario1 = new Usuario("Rafael");
+        Usuario usuario2 = new Usuario("Moraes");
+
+        
+        LocalDate hoje = LocalDate.now();
+        LocalDate devolucaoPrevista1 = hoje.plusDays(7);
+        LocalDate devolucaoPrevista2 = hoje.plusDays(14);
+
+        new Emprestimo(livro1, usuario1, hoje, devolucaoPrevista1);
+        new Emprestimo(livro2, usuario2, hoje, devolucaoPrevista2);
+        new Emprestimo(livro3, usuario1, hoje, devolucaoPrevista1);
+
+       
+        LocalDate devolucaoReal = hoje.plusDays(10);
+        for (Emprestimo emprestimo : usuario1.getEmprestimos()) {
+            double multa = emprestimo.calcularMulta(devolucaoReal);
+            System.out.println("Multa para " + emprestimo.getLivro().getTitulo() + ": R$" + multa);
+        }
+
+       
+        List<Livro> livros = List.of(livro1, livro2, livro3);
+        List<Livro> livrosPopulares = livros.stream()
+                .sorted(Comparator.comparingInt(Livro::getEmprestimos).reversed())
+                .collect(Collectors.toList());
+
+        System.out.println("Livros mais populares:");
+        for (Livro livro : livrosPopulares) {
+            System.out.println(livro);
+        }
+    }
+}
+
+CLASSE AUTOR
+import java.util.ArrayList;
+import java.util.List;
+
+public class Autor {
+    private String nome;
+    private List<Livro> livros;
+
+    public Autor(String nome) {
+        this.nome = nome;
+        this.livros = new ArrayList<>();
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void adicionarLivro(Livro livro) {
+        livros.add(livro);
+    }
+
+    public List<Livro> getLivros() {
+        return livros;
+    }
+
+    @Override
+    public String toString() {
+        return nome;
+    }
+}
+
+CLASSE LIVRO
+import java.util.ArrayList;
+import java.util.List;
+
+public class Livro {
+    private String titulo;
+    private Autor autor;
+    private boolean disponivel;
+    private int emprestimos;
+
+    public Livro(String titulo, Autor autor) {
+        this.titulo = titulo;
+        this.autor = autor;
+        this.disponivel = true;
+        this.emprestimos = 0;
+        autor.adicionarLivro(this);
+    }
+
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public Autor getAutor() {
+        return autor;
+    }
+
+    public boolean isDisponivel() {
+        return disponivel;
+    }
+
+    public void emprestar() {
+        if (disponivel) {
+            disponivel = false;
+            emprestimos++;
+        } else {
+            throw new IllegalStateException("Livro não disponível para empréstimo.");
+        }
+    }
+
+    public void devolver() {
+        disponivel = true;
+    }
+
+    public int getEmprestimos() {
+        return emprestimos;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Livro: %s, Autor: %s, Disponível: %s", titulo, autor, disponivel ? "Sim" : "Não");
+    }
+}
+
+CLASSE USUARIO
+import java.util.ArrayList;
+import java.util.List;
+
+public class Usuario {
+    private String nome;
+    private List<Emprestimo> emprestimos;
+
+    public Usuario(String nome) {
+        this.nome = nome;
+        this.emprestimos = new ArrayList<>();
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void adicionarEmprestimo(Emprestimo emprestimo) {
+        emprestimos.add(emprestimo);
+    }
+
+    public List<Emprestimo> getEmprestimos() {
+        return emprestimos;
+    }
+
+    @Override
+    public String toString() {
+        return nome;
+    }
+}
+
+CLASSE EMPRESTIMO
+import java.time.LocalDate;
+
+public class Emprestimo {
+    private Livro livro;
+    private Usuario usuario;
+    private LocalDate dataEmprestimo;
+    private LocalDate dataDevolucaoPrevista;
+
+    public Emprestimo(Livro livro, Usuario usuario, LocalDate dataEmprestimo, LocalDate dataDevolucaoPrevista) {
+        this.livro = livro;
+        this.usuario = usuario;
+        this.dataEmprestimo = dataEmprestimo;
+        this.dataDevolucaoPrevista = dataDevolucaoPrevista;
+        livro.emprestar();
+        usuario.adicionarEmprestimo(this);
+    }
+
+    public Livro getLivro() {
+        return livro;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public LocalDate getDataEmprestimo() {
+        return dataEmprestimo;
+    }
+
+    public LocalDate getDataDevolucaoPrevista() {
+        return dataDevolucaoPrevista;
+    }
+
+    public double calcularMulta(LocalDate dataDevolucao) {
+        if (dataDevolucao.isAfter(dataDevolucaoPrevista)) {
+            long diasAtraso = dataDevolucao.toEpochDay() - dataDevolucaoPrevista.toEpochDay();
+            return diasAtraso * 1.0;
+        }
+        return 0;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Empréstimo: Livro: %s, Usuário: %s, Data Emprestimo: %s, Devolução Prevista: %s",
+                livro, usuario, dataEmprestimo, dataDevolucaoPrevista);
+    }
+}
+
+8
+CLASSE PRINCIPAL 
+public class Main {
+    public static void main(String[] args) {
+        
+        Projeto projeto1 = new Projeto("Sistema de Gestão");
+        Projeto projeto2 = new Projeto("App Móvel");
+
+       
+        Desenvolvedor dev1 = new Desenvolvedor("Rafael");
+        Desenvolvedor dev2 = new Desenvolvedor("Moraes");
+
+        
+        Tarefa tarefa1 = new Tarefa("Desenvolver API", 40);
+        Tarefa tarefa2 = new Tarefa("Criar Interface", 30);
+        Tarefa tarefa3 = new Tarefa("Testar Funcionalidades", 20);
+
+        
+        tarefa1.atribuirDesenvolvedor(dev1);
+        tarefa2.atribuirDesenvolvedor(dev2);
+        tarefa3.atribuirDesenvolvedor(dev1);
+
+        
+        projeto1.adicionarTarefa(tarefa1);
+        projeto1.adicionarTarefa(tarefa3);
+        projeto2.adicionarTarefa(tarefa2);
+
+        
+        System.out.println("Carga de trabalho do projeto " + projeto1 + ": " + projeto1.calcularCargaTrabalho() + " horas");
+        System.out.println("Carga de trabalho do projeto " + projeto2 + ": " + projeto2.calcularCargaTrabalho() + " horas");
+
+        
+        System.out.println("Tarefas do desenvolvedor " + dev1 + ":");
+        for (Tarefa tarefa : dev1.getTarefas()) {
+            System.out.println(tarefa);
+        }
+    }
+}
+
+CLASSE PROJETO
+import java.util.ArrayList;
+import java.util.List;
+
+public class Projeto {
+    private String nome;
+    private List<Tarefa> tarefas;
+
+    public Projeto(String nome) {
+        this.nome = nome;
+        this.tarefas = new ArrayList<>();
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void adicionarTarefa(Tarefa tarefa) {
+        tarefas.add(tarefa);
+    }
+
+    public List<Tarefa> getTarefas() {
+        return tarefas;
+    }
+
+    public double calcularCargaTrabalho() {
+        double cargaTotal = 0;
+        for (Tarefa tarefa : tarefas) {
+            cargaTotal += tarefa.getHorasEstimadas();
+        }
+        return cargaTotal;
+    }
+
+    @Override
+    public String toString() {
+        return nome;
+    }
+}
+
+CLASSE DESENVOLVEDOR
+import java.util.ArrayList;
+import java.util.List;
+
+public class Desenvolvedor {
+    private String nome;
+    private List<Tarefa> tarefas;
+
+    public Desenvolvedor(String nome) {
+        this.nome = nome;
+        this.tarefas = new ArrayList<>();
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void adicionarTarefa(Tarefa tarefa) {
+        tarefas.add(tarefa);
+    }
+
+    public List<Tarefa> getTarefas() {
+        return tarefas;
+    }
+
+    @Override
+    public String toString() {
+        return nome;
+    }
+}
+
+CLASSE TAREFA
+public class Tarefa {
+    private String nome;
+    private double horasEstimadas;
+    private Desenvolvedor desenvolvedor;
+
+    public Tarefa(String nome, double horasEstimadas) {
+        this.nome = nome;
+        this.horasEstimadas = horasEstimadas;
+        this.desenvolvedor = null;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public double getHorasEstimadas() {
+        return horasEstimadas;
+    }
+
+    public Desenvolvedor getDesenvolvedor() {
+        return desenvolvedor;
+    }
+
+    public void atribuirDesenvolvedor(Desenvolvedor desenvolvedor) {
+        this.desenvolvedor = desenvolvedor;
+        desenvolvedor.adicionarTarefa(this);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Tarefa: %s, Horas Estimadas: %.2f, Desenvolvedor: %s",
+                nome, horasEstimadas, desenvolvedor != null ? desenvolvedor.getNome() : "Não atribuído");
+    }
+}
+
+9
+CLASSE PRINCIPAL 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Main {
+    public static void main(String[] args) {
+        
+        Prato prato1 = new Prato("Strogonoff", 35.50);
+        Prato prato2 = new Prato("Pizza Calabresa", 40.00);
+        Prato prato3 = new Prato("Lasanha 4 queijos", 45.00);
+
+        
+        Mesa mesa1 = new Mesa(1);
+        Mesa mesa2 = new Mesa(2);
+
+        
+        Pedido pedido1 = new Pedido(LocalDate.of(2024, 9, 15));
+        Pedido pedido2 = new Pedido(LocalDate.of(2024, 9, 16));
+
+        
+        pedido1.adicionarPrato(prato1);
+        pedido1.adicionarPrato(prato2);
+        pedido2.adicionarPrato(prato3);
+
+        
+        mesa1.adicionarPedido(pedido1);
+        mesa2.adicionarPedido(pedido2);
+
+        
+        System.out.println("Total do pedido na " + mesa1 + ": R$" + pedido1.calcularTotal());
+        System.out.println("Total do pedido na " + mesa2 + ": R$" + pedido2.calcularTotal());
+
+        
+        List<Pedido> pedidos = new ArrayList<>();
+        pedidos.add(pedido1);
+        pedidos.add(pedido2);
+
+        System.out.println("Reservas futuras:");
+        for (Pedido pedido : pedidos) {
+            if (pedido.getDataReserva().isAfter(LocalDate.now())) {
+                System.out.println(pedido);
+            }
+        }
+    }
+}
+
+CLASSE PRATO
+public class Prato {
+    private String nome;
+    private double preco;
+
+    public Prato(String nome, double preco) {
+        this.nome = nome;
+        this.preco = preco;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public double getPreco() {
+        return preco;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Prato: %s, Preço: R$%.2f", nome, preco);
+    }
+}
+
+CLASSE MESA 
+import java.util.ArrayList;
+import java.util.List;
+
+public class Mesa {
+    private int numero;
+    private List<Pedido> pedidos;
+
+    public Mesa(int numero) {
+        this.numero = numero;
+        this.pedidos = new ArrayList<>();
+    }
+
+    public int getNumero() {
+        return numero;
+    }
+
+    public void adicionarPedido(Pedido pedido) {
+        pedidos.add(pedido);
+    }
+
+    public List<Pedido> getPedidos() {
+        return pedidos;
+    }
+
+    @Override
+    public String toString() {
+        return "Mesa " + numero;
+    }
+}
+
+CLASSE PEDIDO 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Pedido {
+    private List<Prato> pratos;
+    private LocalDate dataReserva;
+
+    public Pedido(LocalDate dataReserva) {
+        this.pratos = new ArrayList<>();
+        this.dataReserva = dataReserva;
+    }
+
+    public void adicionarPrato(Prato prato) {
+        pratos.add(prato);
+    }
+
+    public double calcularTotal() {
+        double total = 0;
+        for (Prato prato : pratos) {
+            total += prato.getPreco();
+        }
+        return total;
+    }
+
+    public LocalDate getDataReserva() {
+        return dataReserva;
+    }
+
+    public List<Prato> getPratos() {
+        return pratos;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Pedido: %s, Total: R$%.2f, Data da Reserva: %s",
+                pratos, calcularTotal(), dataReserva);
+    }
+}
+
+10
+CLASSE PRINCIPAL
+import java.util.Map;
+
+public class Main {
+    public static void main(String[] args) {
+        // Criando professores
+        Professor prof1 = new Professor("Sor Jeferson");
+        Professor prof2 = new Professor("Sor Éder");
+
+        
+        Disciplina disc1 = new Disciplina("Design Gráfico", prof1);
+        Disciplina disc2 = new Disciplina("Programação em Java", prof2);
+
+        
+        Estudante est1 = new Estudante("Rafael Moraes");
+        Estudante est2 = new Estudante("Flavia Silva");
+
+        
+        disc1.matricularEstudante(est1);
+        disc2.matricularEstudante(est1);
+        disc2.matricularEstudante(est2);
+
+        
+        est1.atribuirNota(disc1, 9.5);
+        est1.atribuirNota(disc2, 8.0);
+        est2.atribuirNota(disc2, 7.5);
+
+        
+        System.out.println(est1 + " - Média: " + est1.calcularMedia());
+        System.out.println(est2 + " - Média: " + est2.calcularMedia());
+
+        
+        System.out.println("Disciplinas ministradas pelo professor " + prof1 + ":");
+        for (Disciplina disciplina : prof1.getDisciplinas()) {
+            System.out.println(disciplina);
+        }
+
+        System.out.println("Disciplinas ministradas pelo professor " + prof2 + ":");
+        for (Disciplina disciplina : prof2.getDisciplinas()) {
+            System.out.println(disciplina);
+        }
+    }
+}
+
+CLASSE DISCIPLINA
+import java.util.ArrayList;
+import java.util.List;
+
+public class Disciplina {
+    private String nome;
+    private Professor professor;
+    private List<Estudante> estudantes;
+
+    public Disciplina(String nome, Professor professor) {
+        this.nome = nome;
+        this.professor = professor;
+        this.estudantes = new ArrayList<>();
+        professor.adicionarDisciplina(this);
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public Professor getProfessor() {
+        return professor;
+    }
+
+    public void matricularEstudante(Estudante estudante) {
+        estudantes.add(estudante);
+        estudante.matricularDisciplina(this);
+    }
+
+    public List<Estudante> getEstudantes() {
+        return estudantes;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Disciplina: %s, Professor: %s", nome, professor.getNome());
+    }
+}
+
+CLASSE ESTUDANTE
+import java.util.HashMap;
+import java.util.Map;
+
+public class Estudante {
+    private String nome;
+    private Map<Disciplina, Double> disciplinasNotas;
+
+    public Estudante(String nome) {
+        this.nome = nome;
+        this.disciplinasNotas = new HashMap<>();
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void matricularDisciplina(Disciplina disciplina) {
+        disciplinasNotas.putIfAbsent(disciplina, 0.0);
+    }
+
+    public void atribuirNota(Disciplina disciplina, double nota) {
+        if (disciplinasNotas.containsKey(disciplina)) {
+            disciplinasNotas.put(disciplina, nota);
+        } else {
+            throw new IllegalArgumentException("Estudante não matriculado na disciplina.");
+        }
+    }
+
+    public double calcularMedia() {
+        if (disciplinasNotas.isEmpty()) return 0.0;
+
+        double somaNotas = 0;
+        for (double nota : disciplinasNotas.values()) {
+            somaNotas += nota;
+        }
+        return somaNotas / disciplinasNotas.size();
+    }
+
+    public Map<Disciplina, Double> getDisciplinasNotas() {
+        return disciplinasNotas;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Estudante: %s", nome);
+    }
+
+CLASSE PROFESSOR
+import java.util.ArrayList;
+import java.util.List;
+
+public class Professor {
+    private String nome;
+    private List<Disciplina> disciplinas;
+
+    public Professor(String nome) {
+        this.nome = nome;
+        this.disciplinas = new ArrayList<>();
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void adicionarDisciplina(Disciplina disciplina) {
+        disciplinas.add(disciplina);
+    }
+
+    public List<Disciplina> getDisciplinas() {
+        return disciplinas;
+    }
+
+    @Override
+    public String toString() {
+        return nome;
+    }
+}
+
